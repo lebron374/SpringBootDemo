@@ -103,4 +103,20 @@
     delete from t_student where id = #{id}
   </delete>
 
+  <insert id="insertV1" parameterType="com.example.model.Student" keyProperty="id" useGeneratedKeys="true">
+    insert into t_student (name, age, clazz_id, number)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.name}, #{item.age}, #{item.clazzId}, #{item.number})
+    </foreach>
+  </insert>
+
+  <insert id="insertV2" parameterType="com.example.model.Student" keyProperty="id" useGeneratedKeys="true">
+    insert into t_student (name, age, clazz_id, number)
+    values
+    <foreach collection="studentList" item="item" separator=",">
+      (#{item.name}, #{item.age}, #{item.clazzId}, #{item.number})
+    </foreach>
+  </insert>
+
 </mapper>
