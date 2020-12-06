@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class Controller {
@@ -97,6 +100,123 @@ public class Controller {
         List<Student> result = studentMapper.selectByIdsV4(studentList, age);
 
         redisUtil.set("student", JSON.toJSONString(result));
+
+        return result;
+    }
+
+    @RequestMapping(value = "/insertV1", method = RequestMethod.GET)
+    public Object insertV1() {
+        Student student = new Student();
+        student.setAge(11);
+        student.setName("name");
+        student.setClazzId(123);
+        student.setNumber("123");
+
+        Integer result = studentMapper.insertV1(student);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/insertV2", method = RequestMethod.GET)
+    public Object insertV2() {
+        Student student = new Student();
+        student.setAge(13);
+        student.setName("name");
+        student.setClazzId(123);
+        student.setNumber("123");
+
+        Integer result = studentMapper.insertV2(student);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/batchInsertV1", method = RequestMethod.GET)
+    public Object batchInsertV1() {
+        Student student = new Student();
+        student.setAge(13);
+        student.setName("batchInsertV1");
+        student.setClazzId(123);
+        student.setNumber("batchInsertV1");
+
+        Integer result = studentMapper.batchInsertV1(Arrays.asList(student));
+
+        return result;
+    }
+
+
+    @RequestMapping(value = "/batchInsertV2", method = RequestMethod.GET)
+    public Object batchInsertV2() {
+        Student student = new Student();
+        student.setAge(13);
+        student.setName("batchInsertV2");
+        student.setClazzId(123);
+        student.setNumber("batchInsertV2");
+
+        Integer result = studentMapper.batchInsertV2(Arrays.asList(student));
+
+        return result;
+    }
+
+    @RequestMapping(value = "/updateV1", method = RequestMethod.GET)
+    public Object updateV1(@RequestParam Integer age, @RequestParam Integer id) {
+
+        Student student = new Student();
+        student.setId(id);
+        student.setAge(age);
+
+        Integer result = studentMapper.updateV1(student);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/updateV2", method = RequestMethod.GET)
+    public Object updateV2(@RequestParam Integer age, @RequestParam Integer id) {
+
+        Student student = new Student();
+        student.setId(id);
+        student.setAge(age);
+
+        Integer result = studentMapper.updateV2(student);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/batchUpate", method = RequestMethod.GET)
+    public Object batchUpate() {
+
+        List<Student> studentList = new ArrayList<Student>();
+
+        Student student = new Student();
+        student.setId(19);
+        student.setAge(19);
+
+        studentList.add(student);
+
+        student = new Student();
+        student.setId(20);
+        student.setAge(20);
+        studentList.add(student);
+
+        Integer result = studentMapper.batchUpdate(studentList);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/deleteV1", method = RequestMethod.GET)
+    public Object deleteV1(@RequestParam Integer id) {
+
+        Integer result = studentMapper.deleteById(id);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/deleteV2", method = RequestMethod.GET)
+    public Object deleteV2(@RequestParam String ids) {
+
+        String[] idArr = StringUtils.split(ids, ",");
+        List<Integer> idList = Arrays.stream(idArr).map(id -> Integer.valueOf(id)).collect(Collectors.toList());
+
+        Integer result = studentMapper.batchDetele(idList);
 
         return result;
     }

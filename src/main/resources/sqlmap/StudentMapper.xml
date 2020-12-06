@@ -103,20 +103,104 @@
     delete from t_student where id = #{id}
   </delete>
 
-  <insert id="insertV1" parameterType="com.example.model.Student" keyProperty="id" useGeneratedKeys="true">
-    insert into t_student (name, age, clazz_id, number)
+  <delete id="batchDetele">
+    delete from t_student
+    <if test="idList != null and idList.size() > 0">
+        where id in
+        <foreach collection="idList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </if>
+  </delete>
+
+    <insert id="insertV1" parameterType="com.example.model.Student" keyProperty="id" useGeneratedKeys="true">
+      insert into t_student (`name`, age, clazz_id, `number`)
+      values (#{name}, #{age}, #{clazzId}, #{number})
+    </insert>
+
+    <insert id="insertV2" parameterType="com.example.model.Student" keyProperty="id" useGeneratedKeys="true">
+        insert into t_student (`name`, age, clazz_id, `number`)
+        values (#{student.name}, #{student.age}, #{student.clazzId}, #{student.number})
+    </insert>
+
+  <insert id="batchInsertV1">
+    insert into t_student (`name`, age, clazz_id, `number`)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.name}, #{item.age}, #{item.clazzId}, #{item.number})
     </foreach>
   </insert>
 
-  <insert id="insertV2" parameterType="com.example.model.Student" keyProperty="id" useGeneratedKeys="true">
-    insert into t_student (name, age, clazz_id, number)
+  <insert id="batchInsertV2">
+    insert into t_student (`name`, age, clazz_id, `number`)
     values
     <foreach collection="studentList" item="item" separator=",">
       (#{item.name}, #{item.age}, #{item.clazzId}, #{item.number})
     </foreach>
   </insert>
 
+    <update id="updateV1" parameterType="com.example.model.Student">
+        update t_student
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="age != null" >age = #{age},</if>
+            <if test="clazzId != null">clazzId = #{clazzId},</if>
+            <if test="number != null">`number` = #{number}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateV2" parameterType="com.example.model.Student">
+        update t_student
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null">`name` = #{name},</if>
+            <if test="age != null" >age = #{age},</if>
+            <if test="clazzId != null">clazzId = #{clazzId},</if>
+            <if test="number != null">`number` = #{number},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        update t_student
+        <trim prefix="set" suffixOverrides=",">
+
+          <trim prefix="name = case " suffix="end,">
+            <foreach collection="studentList" item="item">
+              <if test="item.name != null">
+                  when id = #{item.id} then #{item.name}
+              </if>
+            </foreach>
+          </trim>
+
+          <trim prefix="age = case " suffix="end,">
+              <foreach collection="studentList" item="item">
+                  <if test="item.age != null">
+                      when id = #{item.id} then #{item.age}
+                  </if>
+              </foreach>
+          </trim>
+
+          <trim prefix="clazzId = case " suffix="end,">
+              <foreach collection="studentList" item="item">
+                  <if test="item.clazzId != null">
+                      when id = #{item.id} then #{item.clazzId}
+                  </if>
+              </foreach>
+          </trim>
+
+          <trim prefix="number = case " suffix="end,">
+              <foreach collection="studentList" item="item">
+                  <if test="item.number != null">
+                      when id = #{item.id} then #{item.number}
+                  </if>
+              </foreach>
+          </trim>
+        </trim>
+
+        where id in
+        <foreach collection="studentList" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </update>
 </mapper>

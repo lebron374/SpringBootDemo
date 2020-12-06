@@ -42,7 +42,6 @@ public interface StudentMapper {
      */
     Student selectById(@Param("id") int id);
 
-
     List<Student> selectByIds(@Param("ids") List<Integer> id_list, @Param("age") Integer age);
 
     List<Student> selectByIdsV2(@Param("ids") List<Integer> id_list, @Param("age") Integer age);
@@ -50,6 +49,20 @@ public interface StudentMapper {
     List<Student> selectByIdsV3(@Param("studentList") List<Student> studentList, @Param("age") Integer age);
 
     List<Student> selectByIdsV4(@Param("studentList") List<Student> studentList, @Param("age") Integer age);
+
+    Integer insertV1(Student student);
+
+    Integer insertV2(@Param("student") Student student);
+
+    Integer batchInsertV1(List<Student> studentList);
+
+    Integer batchInsertV2(@Param("studentList") List<Student> studentList);
+
+    Integer updateV1(Student student);
+
+    Integer updateV2(Student student);
+
+    Integer batchUpdate(@Param("studentList") List<Student> studentList);
 
     @Select("select * from t_student where id = #{id}")
     Student annoSelectById(Integer id);
@@ -64,6 +77,7 @@ public interface StudentMapper {
      */
     int deleteById(@Param("id") int id);
 
+    int batchDetele(@Param("idList") List<Integer> idList);
 
     @Delete("delete from t_student where id = #{id}")
     int annoDeleteById(Integer id);
